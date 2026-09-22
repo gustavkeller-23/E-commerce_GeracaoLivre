@@ -6,15 +6,15 @@ services:
     container_name: geracao_livre_postgres
     restart: unless-stopped
     environment:
-      POSTGRES_DB: geracao_livre_db
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgrespassword
+      POSTGRES_DB: ${POSTGRES_DB:-geracao_livre_db}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-SUA_SENHA_DO_POSTGRES_AQUI}
     ports:
-      - "5432:5432"
+      - "${POSTGRES_PORT:-5432}:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d geracao_livre_db"]
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER:-postgres} -d $${POSTGRES_DB:-geracao_livre_db}"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -31,12 +31,12 @@ services:
       postgres:
         condition: service_healthy
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/geracao_livre_db
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: postgrespassword
+      SPRING_DATASOURCE_URL: jdbc:postgresql://${POSTGRES_HOST:-postgres}:5432/${POSTGRES_DB:-geracao_livre_db}
+      SPRING_DATASOURCE_USERNAME: ${POSTGRES_USER:-postgres}
+      SPRING_DATASOURCE_PASSWORD: ${POSTGRES_PASSWORD:-SUA_SENHA_DO_POSTGRES_AQUI}
       SPRING_JPA_HIBERNATE_DDL_AUTO: update
       SPRING_SQL_INIT_MODE: always
-      JWT_SECRET: GeracaoLivreSecretKeySeguraParaTokenJWT2026TecidosArtesanatoSuperSegura!
+      JWT_SECRET: ${JWT_SECRET:-GeracaoLivreChaveSeguraParaTokenJWT2026TecidosArtesanato123456789!}
     ports:
       - "8080:8080"
     networks:
