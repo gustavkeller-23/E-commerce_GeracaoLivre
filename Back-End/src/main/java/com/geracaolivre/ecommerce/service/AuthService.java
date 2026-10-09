@@ -42,13 +42,13 @@ public class AuthService {
 
     @Transactional
     public AuthResponse register(RegisterRequest request) {
-        if (usuarioRepository.existsByEmail(request.getEmail())) {
+        if (usuarioRepository.existsByEmail(request.getEmail().trim().toLowerCase(java.util.Locale.ROOT))) {
             throw new IllegalArgumentException("O e-mail informado já está cadastrado.");
         }
 
         Usuario usuario = new Usuario(
                 request.getNome(),
-                request.getEmail(),
+                request.getEmail().trim().toLowerCase(java.util.Locale.ROOT),
                 passwordEncoder.encode(request.getSenha()),
                 request.getTelefone(),
                 Role.ROLE_CLIENTE
@@ -67,12 +67,12 @@ public class AuthService {
     public AuthResponse login(AuthRequest request) {
         try {
             Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(request.getEmail(), request.getSenha())
+                    new UsernamePasswordAuthenticationToken(request.getEmail().trim().toLowerCase(java.util.Locale.ROOT), request.getSenha())
             );
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
-            Usuario usuario = usuarioRepository.findByEmail(request.getEmail())
+            Usuario usuario = usuarioRepository.findByEmail(request.getEmail().trim().toLowerCase(java.util.Locale.ROOT))
                     .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado"));
 
             String token = tokenProvider.generateToken(usuario.getEmail(), usuario.getRole().name());

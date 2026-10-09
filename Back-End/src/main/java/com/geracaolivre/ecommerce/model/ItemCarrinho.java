@@ -21,12 +21,12 @@ public class ItemCarrinho {
     @JoinColumn(name = "produto_id", nullable = false)
     private Produto produto;
 
-    @Column(nullable = false)
-    private Integer quantidade = 1;
+    @Column(nullable = false, precision = 12, scale = 2)
+    private BigDecimal quantidade = BigDecimal.ONE;
 
     public ItemCarrinho() {}
 
-    public ItemCarrinho(Carrinho carrinho, Produto produto, Integer quantidade) {
+    public ItemCarrinho(Carrinho carrinho, Produto produto, BigDecimal quantidade) {
         this.carrinho = carrinho;
         this.produto = produto;
         this.quantidade = quantidade;
@@ -41,12 +41,12 @@ public class ItemCarrinho {
     public Produto getProduto() { return produto; }
     public void setProduto(Produto produto) { this.produto = produto; }
 
-    public Integer getQuantidade() { return quantidade; }
-    public void setQuantidade(Integer quantidade) { this.quantidade = quantidade; }
+    public BigDecimal getQuantidade() { return quantidade; }
+    public void setQuantidade(BigDecimal quantidade) { this.quantidade = quantidade; }
 
     public BigDecimal getSubtotal() {
         if (produto == null) return BigDecimal.ZERO;
         BigDecimal precoEfetivo = produto.getPrecoPromocional() != null ? produto.getPrecoPromocional() : produto.getPreco();
-        return precoEfetivo.multiply(BigDecimal.valueOf(quantidade));
+        return precoEfetivo.multiply(quantidade).setScale(2, java.math.RoundingMode.HALF_UP);
     }
 }

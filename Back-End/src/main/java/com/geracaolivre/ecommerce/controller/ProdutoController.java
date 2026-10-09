@@ -36,4 +36,16 @@ public class ProdutoController {
         List<ProdutoDTO> destaques = produtoService.listarDestaques();
         return ResponseEntity.ok(destaques);
     }
+
+    @GetMapping("/paginado")
+    public java.util.Map<String, Object> pagina(@RequestParam(required = false) String busca,
+            @RequestParam(required = false) Long categoriaId, @RequestParam(required = false) Integer largura,
+            @RequestParam(defaultValue = "0") int pagina, @RequestParam(defaultValue = "12") int tamanho) {
+        var resultado = produtoService.pagina(busca, categoriaId, largura, pagina, tamanho);
+        return java.util.Map.of("itens", resultado.getContent(), "pagina", resultado.getNumber(), "totalPaginas", resultado.getTotalPages(), "total", resultado.getTotalElements());
+    }
+    @org.springframework.beans.factory.annotation.Autowired
+    private com.geracaolivre.ecommerce.service.CatalogoEventos eventos;
+    @GetMapping(value = "/eventos", produces = "text/event-stream")
+    public org.springframework.web.servlet.mvc.method.annotation.SseEmitter eventos() { return eventos.conectar(); }
 }

@@ -17,13 +17,17 @@ public class ProdutoDTO {
 
     @NotNull(message = "Preço é obrigatório")
     @DecimalMin(value = "0.01", message = "Preço deve ser maior que zero")
+    @jakarta.validation.constraints.Digits(integer = 8, fraction = 2)
     private BigDecimal preco;
 
+    @DecimalMin("0.01")
+    @jakarta.validation.constraints.Digits(integer = 8, fraction = 2)
     private BigDecimal precoPromocional;
 
     @NotNull(message = "Estoque é obrigatório")
-    @Min(value = 0, message = "Estoque não pode ser negativo")
-    private Integer estoque;
+    @DecimalMin(value = "0", message = "Estoque não pode ser negativo")
+    @jakarta.validation.constraints.Digits(integer = 10, fraction = 2)
+    private BigDecimal estoque;
 
     private String imagemUrl;
 
@@ -34,9 +38,37 @@ public class ProdutoDTO {
     private Boolean destaque = false;
     private Boolean ativo = true;
 
+
+    @NotBlank
+    @jakarta.validation.constraints.Pattern(regexp = "GORGURAO", message = "O catálogo aceita apenas fitas de gorgurão")
+    private String material = "GORGURAO";
+    @NotBlank
+    private String sku;
+    @NotNull
+    @Min(1)
+    private Integer larguraMm;
+    @NotBlank
+    private String cor;
+    private String estampa;
+    @NotNull
+    @DecimalMin("0.01")
+    @jakarta.validation.constraints.Digits(integer = 10, fraction = 2)
+    private BigDecimal quantidadeMinima;
+    @NotNull
+    @DecimalMin("0.01")
+    @jakarta.validation.constraints.Digits(integer = 10, fraction = 2)
+    private BigDecimal incremento;
+
     public ProdutoDTO() {}
 
     public ProdutoDTO(Produto produto) {
+        this.material = produto.getMaterial();
+        this.sku = produto.getSku();
+        this.larguraMm = produto.getLarguraMm();
+        this.cor = produto.getCor();
+        this.estampa = produto.getEstampa();
+        this.quantidadeMinima = produto.getQuantidadeMinima();
+        this.incremento = produto.getIncremento();
         this.id = produto.getId();
         this.nome = produto.getNome();
         this.descricao = produto.getDescricao();
@@ -51,6 +83,21 @@ public class ProdutoDTO {
         this.destaque = produto.getDestaque();
         this.ativo = produto.getAtivo();
     }
+
+    public String getMaterial() { return material; }
+    public void setMaterial(String value) { this.material = value; }
+    public String getSku() { return sku; }
+    public void setSku(String value) { this.sku = value; }
+    public Integer getLarguraMm() { return larguraMm; }
+    public void setLarguraMm(Integer value) { this.larguraMm = value; }
+    public String getCor() { return cor; }
+    public void setCor(String value) { this.cor = value; }
+    public String getEstampa() { return estampa; }
+    public void setEstampa(String value) { this.estampa = value; }
+    public BigDecimal getQuantidadeMinima() { return quantidadeMinima; }
+    public void setQuantidadeMinima(BigDecimal value) { this.quantidadeMinima = value; }
+    public BigDecimal getIncremento() { return incremento; }
+    public void setIncremento(BigDecimal value) { this.incremento = value; }
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
@@ -67,8 +114,8 @@ public class ProdutoDTO {
     public BigDecimal getPrecoPromocional() { return precoPromocional; }
     public void setPrecoPromocional(BigDecimal precoPromocional) { this.precoPromocional = precoPromocional; }
 
-    public Integer getEstoque() { return estoque; }
-    public void setEstoque(Integer estoque) { this.estoque = estoque; }
+    public BigDecimal getEstoque() { return estoque; }
+    public void setEstoque(BigDecimal estoque) { this.estoque = estoque; }
 
     public String getImagemUrl() { return imagemUrl; }
     public void setImagemUrl(String imagemUrl) { this.imagemUrl = imagemUrl; }

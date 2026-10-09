@@ -21,8 +21,8 @@ public class ItemPedido {
     @JoinColumn(name = "produto_id", nullable = false)
     private Produto produto;
 
-    @Column(nullable = false)
-    private Integer quantidade;
+    @Column(nullable = false, precision = 12, scale = 2)
+    private BigDecimal quantidade;
 
     @Column(nullable = false, precision = 10, scale = 2)
     private BigDecimal precoUnitario;
@@ -32,12 +32,12 @@ public class ItemPedido {
 
     public ItemPedido() {}
 
-    public ItemPedido(Pedido pedido, Produto produto, Integer quantidade, BigDecimal precoUnitario) {
+    public ItemPedido(Pedido pedido, Produto produto, BigDecimal quantidade, BigDecimal precoUnitario) {
         this.pedido = pedido;
         this.produto = produto;
         this.quantidade = quantidade;
         this.precoUnitario = precoUnitario;
-        this.subtotal = precoUnitario.multiply(BigDecimal.valueOf(quantidade));
+        this.subtotal = precoUnitario.multiply(quantidade).setScale(2, java.math.RoundingMode.HALF_UP);
     }
 
     public Long getId() { return id; }
@@ -49,8 +49,8 @@ public class ItemPedido {
     public Produto getProduto() { return produto; }
     public void setProduto(Produto produto) { this.produto = produto; }
 
-    public Integer getQuantidade() { return quantidade; }
-    public void setQuantidade(Integer quantidade) { this.quantidade = quantidade; }
+    public BigDecimal getQuantidade() { return quantidade; }
+    public void setQuantidade(BigDecimal quantidade) { this.quantidade = quantidade; }
 
     public BigDecimal getPrecoUnitario() { return precoUnitario; }
     public void setPrecoUnitario(BigDecimal precoUnitario) { this.precoUnitario = precoUnitario; }

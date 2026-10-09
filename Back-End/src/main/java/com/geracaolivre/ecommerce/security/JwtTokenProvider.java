@@ -16,7 +16,7 @@ public class JwtTokenProvider {
     private final long expiration;
 
     public JwtTokenProvider(
-            @Value("${geracaolivre.jwt.secret:GeracaoLivreChaveSeguraParaTokenJWT2026TecidosArtesanato123456789!}") String secret,
+            @Value("${geracaolivre.jwt.secret}") String secret,
             @Value("${geracaolivre.jwt.expiration:86400000}") long expiration) {
         this.secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
         this.expiration = expiration;

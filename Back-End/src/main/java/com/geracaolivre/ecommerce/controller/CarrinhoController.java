@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+@org.springframework.transaction.annotation.Transactional
 @RestController
 @RequestMapping("/api/carrinho")
 public class CarrinhoController {
@@ -34,6 +35,7 @@ public class CarrinhoController {
             Map<String, Object> itemMap = new HashMap<>();
             itemMap.put("id", item.getId());
             itemMap.put("produtoId", item.getProduto().getId());
+            itemMap.put("produto", new com.geracaolivre.ecommerce.dto.ProdutoDTO(item.getProduto()));
             itemMap.put("nome", item.getProduto().getNome());
             itemMap.put("imagemUrl", item.getProduto().getImagemUrl());
             itemMap.put("precoUnitario", item.getProduto().getPrecoPromocional() != null ? item.getProduto().getPrecoPromocional() : item.getProduto().getPreco());
@@ -80,5 +82,10 @@ public class CarrinhoController {
         Usuario usuario = authService.getAuthenticatedUser();
         carrinhoService.limparCarrinho(usuario);
         return ResponseEntity.ok(Map.of("message", "Carrinho limpo com sucesso"));
+    }
+
+    @PostMapping("/mesclar")
+    public ResponseEntity<?> mesclar(@Valid @RequestBody com.geracaolivre.ecommerce.dto.MesclarCarrinhoRequest request) {
+        return ResponseEntity.ok(formatarCarrinhoResponse(carrinhoService.mesclar(authService.getAuthenticatedUser(), request)));
     }
 }

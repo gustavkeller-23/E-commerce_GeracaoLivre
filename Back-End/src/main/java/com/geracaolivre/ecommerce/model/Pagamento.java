@@ -46,7 +46,7 @@ public class Pagamento {
         this.pedido = pedido;
         this.formaPagamento = formaPagamento;
         this.valor = valor;
-        this.status = (formaPagamento == FormaPagamento.CARTAO_CREDITO) ? StatusPagamento.CONFIRMADO : StatusPagamento.PENDENTE;
+        this.status = StatusPagamento.PENDENTE;
         if (this.status == StatusPagamento.CONFIRMADO) {
             this.dataPagamento = LocalDateTime.now();
         }

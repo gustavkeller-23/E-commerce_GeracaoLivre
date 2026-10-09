@@ -1,16 +1,20 @@
 package com.geracaolivre.ecommerce.dto;
 
-import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotNull;
+
+import java.math.BigDecimal;
 
 public class AtualizarQuantidadeRequest {
     @NotNull(message = "Quantidade é obrigatória")
-    @Min(value = 1, message = "A quantidade mínima deve ser 1")
-    private Integer quantidade;
+    @DecimalMin(value = "0.01", message = "Informe uma metragem maior que zero")
+    @Digits(integer = 10, fraction = 2)
+    private BigDecimal quantidade;
 
     public AtualizarQuantidadeRequest() {}
-    public AtualizarQuantidadeRequest(Integer quantidade) { this.quantidade = quantidade; }
+    public AtualizarQuantidadeRequest(BigDecimal quantidade) { this.quantidade = quantidade; }
 
-    public Integer getQuantidade() { return quantidade; }
-    public void setQuantidade(Integer quantidade) { this.quantidade = quantidade; }
+    public BigDecimal getQuantidade() { return quantidade; }
+    public void setQuantidade(BigDecimal quantidade) { this.quantidade = quantidade; }
 }

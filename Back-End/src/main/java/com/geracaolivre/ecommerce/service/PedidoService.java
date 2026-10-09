@@ -30,8 +30,12 @@ public class PedidoService {
         this.pagamentoRepository = pagamentoRepository;
     }
 
+    @org.springframework.beans.factory.annotation.Value("${geracaolivre.checkout-simulado:false}")
+    private boolean checkoutSimulado;
+
     @Transactional
     public Pedido criarPedido(Usuario usuario, CheckoutRequest request) {
+        if (!checkoutSimulado) throw new org.springframework.web.server.ResponseStatusException(org.springframework.http.HttpStatus.SERVICE_UNAVAILABLE, "Pagamento ainda não configurado. Nenhuma cobrança foi realizada.");
         Carrinho carrinho = carrinhoRepository.findByUsuarioId(usuario.getId())
                 .orElseThrow(() -> new IllegalStateException("Carrinho não encontrado para este usuário."));
 
@@ -42,7 +46,7 @@ public class PedidoService {
         Pedido pedido = new Pedido();
         pedido.setUsuario(usuario);
         pedido.setDataPedido(LocalDateTime.now());
-        pedido.setStatus(request.getFormaPagamento() == FormaPagamento.CARTAO_CREDITO ? StatusPedido.PAGO : StatusPedido.PENDENTE);
+        pedido.setStatus(StatusPedido.PENDENTE);
 
         // Gera número de pedido (NP)
         String np = "NP-" + System.currentTimeMillis() % 1000000 + "-" + UUID.randomUUID().toString().substring(0, 4).toUpperCase();
@@ -62,12 +66,13 @@ public class PedidoService {
 
         for (ItemCarrinho item : carrinho.getItens()) {
             Produto produto = item.getProduto();
-            if (produto.getEstoque() < item.getQuantidade()) {
+            if (produto.getEstoque().compareTo(item.getQuantidade()) < 0) {
                 throw new IllegalArgumentException("Estoque insuficiente para o produto: " + produto.getNome());
             }
 
+            produto.validarQuantidade(item.getQuantidade());
             // Baixa no estoque
-            produto.setEstoque(produto.getEstoque() - item.getQuantidade());
+            produto.setEstoque(produto.getEstoque().subtract(item.getQuantidade()));
             produtoRepository.save(produto);
 
             BigDecimal precoUnitario = produto.getPrecoPromocional() != null ? produto.getPrecoPromocional() : produto.getPreco();

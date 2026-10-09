@@ -49,7 +49,7 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/api/categorias/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/mensagens/**").permitAll()
                 .requestMatchers("/error").permitAll()
-                .requestMatchers("/h2-console/**").permitAll()
+
                 
                 // Rotas de Administração da Dona da Loja (US08 / UC09)
                 .requestMatchers("/api/admin/**").hasAuthority("ROLE_ADMIN")
@@ -57,7 +57,15 @@ public class SecurityConfig {
                 // Demais rotas exigem autenticação
                 .anyRequest().authenticated()
             )
-            .headers(headers -> headers.frameOptions(frame -> frame.disable()))
+            .exceptionHandling(errors -> errors
+                .authenticationEntryPoint((request, response, exception) -> {
+                    response.setStatus(401); response.setContentType("application/json;charset=UTF-8");
+                    response.getWriter().write("{\"message\":\"Entre na sua conta para continuar.\"}");
+                })
+                .accessDeniedHandler((request, response, exception) -> {
+                    response.setStatus(403); response.setContentType("application/json;charset=UTF-8");
+                    response.getWriter().write("{\"message\":\"Você não tem permissão para esta operação.\"}");
+                }))
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
