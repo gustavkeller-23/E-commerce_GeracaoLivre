@@ -48,7 +48,7 @@ public class Produto {
     private LocalDateTime dataCadastro = LocalDateTime.now();
 
 
-    @jakarta.validation.constraints.Pattern(regexp = "GORGURAO")
+    @jakarta.validation.constraints.Pattern(regexp = "GORGURAO|CETIM")
     private String material = "GORGURAO";
     @Column(unique = true)
     private String sku;
@@ -123,7 +123,7 @@ public class Produto {
     public LocalDateTime getDataCadastro() { return dataCadastro; }
     public void setDataCadastro(LocalDateTime dataCadastro) { this.dataCadastro = dataCadastro; }
 
-    public boolean isCatalogavel() { return Boolean.TRUE.equals(ativo) && "GORGURAO".equals(material); }
+    public boolean isCatalogavel() { return Boolean.TRUE.equals(ativo) && ("GORGURAO".equals(material) || "CETIM".equals(material)); }
 
     public void validarQuantidade(BigDecimal quantidade) {
         if (!isDisponivel()) throw new IllegalStateException("Fita indisponível no momento.");

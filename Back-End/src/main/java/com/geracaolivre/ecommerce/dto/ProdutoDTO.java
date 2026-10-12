@@ -40,7 +40,7 @@ public class ProdutoDTO {
 
 
     @NotBlank
-    @jakarta.validation.constraints.Pattern(regexp = "GORGURAO", message = "O catálogo aceita apenas fitas de gorgurão")
+    @jakarta.validation.constraints.Pattern(regexp = "GORGURAO|CETIM", message = "O catálogo aceita fitas de gorgurão ou cetim")
     private String material = "GORGURAO";
     @NotBlank
     private String sku;

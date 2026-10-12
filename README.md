@@ -1,6 +1,6 @@
 # Geração Livre
 
-Loja virtual de **fitas de gorgurão vendidas por metro**, com React, Java 21/Spring Boot e PostgreSQL. A primeira entrega inclui catálogo, detalhe, cadastro/login, carrinho visitante e por conta, mesclagem e administração básica de produtos.
+Loja virtual de **fitas de gorgurão e cetim vendidas por metro**, com React, Java 21/Spring Boot e PostgreSQL. A primeira entrega inclui catálogo, detalhe, cadastro/login, carrinho visitante e por conta, mesclagem e administração básica de produtos.
 
 O planejamento e as pendências estão em [PLANO_IMPLEMENTACAO.md](PLANO_IMPLEMENTACAO.md).
 
@@ -91,7 +91,7 @@ Quantidades são decimais em metros com até duas casas; preços são decimais e
 
 Rotas privadas exigem `Authorization: Bearer <token>`. Administração exige `ROLE_ADMIN`; cadastro público sempre cria cliente. O logout remove a sessão do navegador e mantém o carrinho no banco. Revogação de tokens no servidor ainda está pendente.
 
-Paginação retorna `itens`, `pagina`, `totalPaginas` e `total`. Produto possui `material=GORGURAO`, `sku`, `larguraMm`, `cor`, `estampa`, `preco`, `precoPromocional`, `estoque`, `quantidadeMinima`, `incremento`, `categoriaId`, `imagemUrl` e `ativo`. A API rejeita outro material. O carrinho inclui dados atualizados do produto e total calculado no servidor.
+Paginação retorna `itens`, `pagina`, `totalPaginas` e `total`. Produto possui `material=GORGURAO`, `sku`, `larguraMm`, `cor`, `estampa`, `preco`, `precoPromocional`, `estoque`, `quantidadeMinima`, `incremento`, `categoriaId`, `imagemUrl` e `ativo`. A API aceita `GORGURAO` e `CETIM` e rejeita outros materiais. O carrinho inclui dados atualizados do produto e total calculado no servidor.
 
 Mesclagem reúne o carrinho visitante ao da conta sob transação. A chave deve permanecer igual durante tentativas de repetir a mesma mesclagem. Uma chave já processada não adiciona novamente. Em conflito de estoque/regra/indisponibilidade, nenhuma parte é gravada e o navegador preserva os itens para revisão; após corrigir a seleção, entre novamente. Se o cadastro já foi criado, use Entrar, não repita o cadastro.
 
@@ -100,3 +100,12 @@ Erros de domínio retornam `message`; erros de formulário incluem `campos`. Có
 ## Próximas entregas
 
 Recuperação de senha, bloqueio de conta, endereços, preferências por cliente, upload de imagens, favoritos, atendimento, integração de frete/pagamento e operação de pedidos. O checkout está indisponível por padrão na interface e na API. Esta versão não realiza cobrança real nem está pronta para operação comercial.
+
+
+## Fitas de cetim cadastradas - 12/10/2026
+
+Cinco fitas de cetim de 38 mm, com fotos originais fornecidas pelo responsável: Azul Oceano (CF009 2105), Rosa Magnólia (CF009 2101), Bordô (CF009 1377), Laranja Abóbora (CF009 1235) e Verde Cítrico (CF009 280).
+
+Valores temporários autorizados: R$ 4,90 por metro e 30 metros de estoque por cor. Regras definidas pelo responsável: corte mínimo de 1 metro e incremento de 0,5 metro. Os produtos são cadastrados automaticamente no perfil `dev`, sem duplicar SKUs nem sobrescrever edições feitas no painel. Os valores iniciais ficam em `Back-End/src/main/resources/catalogo/fitas-cetim.json`. As fotos ficam em `Front-End/public/products/cetim`.
+
+Em outros ambientes, o painel oferece os cinco cadastros preenchidos para revisão e salvamento. O cadastro automático com valores de teste fica restrito à demonstração.

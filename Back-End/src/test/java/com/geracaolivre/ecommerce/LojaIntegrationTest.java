@@ -31,7 +31,7 @@ class LojaIntegrationTest {
     @Test void catalogoPublicoComPaginacaoEFiltragem() throws Exception {
         mvc.perform(get("/api/produtos/paginado").param("tamanho", "2").param("largura", "38"))
                 .andExpect(status().isOk()).andExpect(jsonPath("$.itens.length()").value(2))
-                .andExpect(jsonPath("$.total").value(3)).andExpect(jsonPath("$.itens[0].material").value("GORGURAO"));
+                .andExpect(jsonPath("$.total").value(8)).andExpect(jsonPath("$.itens[0].material").value("GORGURAO"));
         mvc.perform(get("/api/produtos/paginado").param("busca", "inexistente"))
                 .andExpect(status().isOk()).andExpect(jsonPath("$.total").value(0));
     }
@@ -82,7 +82,7 @@ class LojaIntegrationTest {
         mvc.perform(get("/api/produtos/99999999")).andExpect(status().isNotFound());
         mvc.perform(delete("/api/admin/produtos/" + id).header("Authorization", "Bearer " + admin())).andExpect(status().isNoContent());
     }
-    @Test void administradorPodeCadastrarEEditarSomenteGorgurao() throws Exception {
+    @Test void administradorPodeCadastrarEEditarFitasPermitidas() throws Exception {
         String token = admin();
         String body = "{\"nome\":\"Fita teste\",\"sku\":\"GL-TESTE\",\"cor\":\"Amarelo\",\"larguraMm\":22,\"preco\":2.90,\"estoque\":10.50,\"quantidadeMinima\":0.50,\"incremento\":0.10,\"categoriaId\":1,\"material\":\"GORGURAO\"}";
         JsonNode produto = mapper.readTree(mvc.perform(post("/api/admin/produtos").header("Authorization", "Bearer " + token)
@@ -90,11 +90,27 @@ class LojaIntegrationTest {
         mvc.perform(put("/api/admin/produtos/" + produto.get("id").asLong()).header("Authorization", "Bearer " + token)
                 .contentType(MediaType.APPLICATION_JSON).content(body.replace("2.90", "3.90"))).andExpect(status().isOk());
         mvc.perform(post("/api/admin/produtos").header("Authorization", "Bearer " + token).contentType(MediaType.APPLICATION_JSON)
-                .content(body.replace("GORGURAO", "CETIM"))).andExpect(status().isBadRequest());
+                .content(body.replace("GORGURAO", "VELUDO"))).andExpect(status().isBadRequest());
     }
     @Test void checkoutNaoConfirmaPagamentoSimulado() throws Exception {
         mvc.perform(post("/api/pedidos/checkout").header("Authorization", "Bearer " + register()).contentType(MediaType.APPLICATION_JSON)
                 .content("{\"cep\":\"86360000\",\"rua\":\"Rua\",\"numero\":\"1\",\"bairro\":\"Centro\",\"cidade\":\"Bandeirantes\",\"estado\":\"PR\",\"formaPagamento\":\"CARTAO_CREDITO\"}"))
                 .andExpect(status().isServiceUnavailable());
+    }
+
+    @Test void fitasCetimCadastradasComRegrasDefinidas() throws Exception {
+        mvc.perform(get("/api/produtos/paginado").param("busca", "Cetim")).andExpect(status().isOk())
+                .andExpect(jsonPath("$.total").value(5)).andExpect(jsonPath("$.itens[0].sku").value("CF009 2105"))
+                .andExpect(jsonPath("$.itens[0].material").value("CETIM"))
+                .andExpect(jsonPath("$.itens[0].quantidadeMinima").value(1.0))
+                .andExpect(jsonPath("$.itens[0].incremento").value(0.5));
+        Long id = jdbc.queryForObject("SELECT id FROM produtos WHERE sku = 'CF009 2105'", Long.class);
+        String token = register();
+        mvc.perform(post("/api/carrinho/adicionar").header("Authorization", "Bearer " + token).contentType(MediaType.APPLICATION_JSON)
+                .content("{\"produtoId\":" + id + ",\"quantidade\":1.50}"))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.total").value(7.35));
+        mvc.perform(post("/api/carrinho/adicionar").header("Authorization", "Bearer " + token).contentType(MediaType.APPLICATION_JSON)
+                .content("{\"produtoId\":" + id + ",\"quantidade\":1.25}"))
+                .andExpect(status().isBadRequest());
     }
 }

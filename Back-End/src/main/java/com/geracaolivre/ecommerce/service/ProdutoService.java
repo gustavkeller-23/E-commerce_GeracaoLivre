@@ -118,12 +118,12 @@ public class ProdutoService {
     }
 
     private void validarDados(ProdutoDTO dto) {
-        if (!"GORGURAO".equals(dto.getMaterial())) throw new IllegalArgumentException("Apenas fitas de gorgurão são permitidas.");
+        if (!"GORGURAO".equals(dto.getMaterial()) && !"CETIM".equals(dto.getMaterial())) throw new IllegalArgumentException("Informe gorgurão ou cetim como material da fita.");
         if (dto.getPrecoPromocional() != null && dto.getPrecoPromocional().compareTo(dto.getPreco()) >= 0)
             throw new IllegalArgumentException("Preço promocional deve ser menor que o preço regular.");
     }
     private void aplicarCaracteristicas(Produto produto, ProdutoDTO dto) {
-        produto.setMaterial("GORGURAO");
+        produto.setMaterial(dto.getMaterial());
         produto.setSku(dto.getSku().trim());
         produto.setLarguraMm(dto.getLarguraMm());
         produto.setCor(dto.getCor().trim());
@@ -137,7 +137,7 @@ public class ProdutoService {
         org.springframework.data.jpa.domain.Specification<Produto> spec = (root, query, cb) -> {
             var predicates = new java.util.ArrayList<jakarta.persistence.criteria.Predicate>();
             predicates.add(cb.isTrue(root.get("ativo")));
-            predicates.add(cb.equal(root.get("material"), "GORGURAO"));
+            predicates.add(root.get("material").in("GORGURAO", "CETIM"));
             if (categoriaId != null) predicates.add(cb.equal(root.get("categoria").get("id"), categoriaId));
             if (largura != null) predicates.add(cb.equal(root.get("larguraMm"), largura));
             if (busca != null && !busca.isBlank()) {

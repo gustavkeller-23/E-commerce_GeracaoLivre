@@ -9,21 +9,23 @@ import java.util.List;
 
 @Repository
 public interface ProdutoRepository extends JpaRepository<Produto, Long>, org.springframework.data.jpa.repository.JpaSpecificationExecutor<Produto> {
-    @Query("SELECT p FROM Produto p WHERE p.ativo = true AND p.material = 'GORGURAO'")
+    boolean existsBySku(String sku);
+
+    @Query("SELECT p FROM Produto p WHERE p.ativo = true AND p.material IN ('GORGURAO', 'CETIM')")
     List<Produto> findByAtivoTrue();
 
-    @Query("SELECT p FROM Produto p WHERE p.ativo = true AND p.material = 'GORGURAO' AND p.categoria.id = :categoriaId")
+    @Query("SELECT p FROM Produto p WHERE p.ativo = true AND p.material IN ('GORGURAO', 'CETIM') AND p.categoria.id = :categoriaId")
     List<Produto> findByCategoriaIdAndAtivoTrue(@Param("categoriaId") Long categoriaId);
 
-    @Query("SELECT p FROM Produto p WHERE p.ativo = true AND p.material = 'GORGURAO' AND p.destaque = true")
+    @Query("SELECT p FROM Produto p WHERE p.ativo = true AND p.material IN ('GORGURAO', 'CETIM') AND p.destaque = true")
     List<Produto> findByDestaqueTrueAndAtivoTrue();
 
-    @Query("SELECT p FROM Produto p WHERE p.ativo = true AND p.material = 'GORGURAO' AND " +
+    @Query("SELECT p FROM Produto p WHERE p.ativo = true AND p.material IN ('GORGURAO', 'CETIM') AND " +
            "(LOWER(p.nome) LIKE LOWER(CONCAT('%', :termo, '%')) OR " +
            "LOWER(p.descricao) LIKE LOWER(CONCAT('%', :termo, '%')))")
     List<Produto> buscarPorTermo(@Param("termo") String termo);
 
-    @Query("SELECT p FROM Produto p WHERE p.ativo = true AND p.material = 'GORGURAO' AND p.categoria.id = :categoriaId AND " +
+    @Query("SELECT p FROM Produto p WHERE p.ativo = true AND p.material IN ('GORGURAO', 'CETIM') AND p.categoria.id = :categoriaId AND " +
            "(LOWER(p.nome) LIKE LOWER(CONCAT('%', :termo, '%')) OR " +
            "LOWER(p.descricao) LIKE LOWER(CONCAT('%', :termo, '%')))")
     List<Produto> buscarPorCategoriaETermo(@Param("categoriaId") Long categoriaId, @Param("termo") String termo);

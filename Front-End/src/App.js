@@ -124,7 +124,7 @@ export default function App() {
   return <>
     <div className="topbar">Pequenos detalhes. Infinitas possibilidades.</div>
     <header className="header wrap">
-      <a className="brand" href="#loja"><span className="brand-icon">g</span><span>geração livre<small>FITAS & CRIATIVIDADE</small></span></a>
+      <a className="brand" href="#loja" aria-label="Geração Livre — início"><img className="brand-logo" src={`${process.env.PUBLIC_URL}/brand/geracao-livre-logo.png`} alt="Geração Livre" width="112" height="112" /><span className="brand-copy">GERAÇÃO LIVRE<small>CRIATIVIDADE POR METRO</small></span></a>
       <nav aria-label="Navegação principal"><a href="#loja">Nossas fitas</a>{auth?.role === 'ROLE_ADMIN' && <a href="#admin">Administrar</a>}</nav>
       <div className="header-actions">{auth ? <><span className="user-name">Olá, {auth.nome.split(' ')[0]}</span><button className="text-button" disabled={disabled} onClick={logout}>Sair</button></> : <a href="#entrar">Minha conta</a>}<a className="bag-link" href="#sacola">Sacola <span>{itens.length}</span></a></div>
     </header>
@@ -138,6 +138,6 @@ export default function App() {
       {route.page === 'admin' && (restoring ? <p className="wrap">Verificando acesso…</p> : auth?.role === 'ROLE_ADMIN' ? <Admin auth={auth} action={action} disabled={disabled} updated={() => setRevision(value => value + 1)} /> : <div className="empty wrap"><h1>Acesso administrativo</h1><p>Entre com uma conta de administrador para continuar.</p><a href="#entrar" className="button">Entrar</a></div>)}
       {!['loja', 'produto', 'sacola', 'entrar', 'admin'].includes(route.page) && <div className="empty wrap"><h1>Página não encontrada</h1><a href="#loja">Voltar à loja</a></div>}
     </main>
-    <footer className="footer wrap"><div><strong>geração livre</strong><p>Fitas de gorgurão para ideias que ganham vida.</p></div><span>Bandeirantes · Paraná</span><a href="#loja">Continuar criando ↗</a></footer>
+    <footer className="footer wrap"><div className="footer-brand"><img src={`${process.env.PUBLIC_URL}/brand/geracao-livre-logo.png`} alt="Geração Livre" width="88" height="88" /><div><strong>GERAÇÃO LIVRE</strong><p>Fitas para ideias que ganham vida.</p></div></div><span>Bandeirantes · Paraná</span><a href="#loja">Continuar criando ↗</a></footer>
   </>;
 }

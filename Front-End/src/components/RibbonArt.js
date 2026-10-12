@@ -5,9 +5,9 @@ export default function RibbonArt({ product, decorative = false }) {
   const [failed, setFailed] = useState(false);
   useEffect(() => { setFailed(false); }, [product?.imagemUrl]);
   const cor = product?.cor?.toLowerCase() || '';
-  const color = cor.includes('rosa') ? '#ba7f90' : cor.includes('verde') ? '#8fa38b' : cor.includes('azul') ? '#90abc5' : cor.includes('lavanda') ? '#b09ec2' : cor.includes('terra') ? '#b87861' : '#d6c39c';
+  const color = cor.includes('turquesa') ? '#5ce0e4' : cor.includes('rosa') ? '#ba7f90' : cor.includes('verde') ? '#8fa38b' : cor.includes('azul') ? '#90abc5' : cor.includes('lavanda') ? '#b09ec2' : cor.includes('terra') ? '#b87861' : '#d6c39c';
   if (product?.imagemUrl && !failed) return <img className="ribbon-image" src={product.imagemUrl} alt={product.nome} onError={() => setFailed(true)} />;
-  return <svg viewBox="0 0 400 300" role={decorative ? undefined : 'img'} aria-hidden={decorative || undefined} aria-label={decorative ? undefined : `Ilustração de fita ${product?.cor || 'de gorgurão'}`}>
+  return <svg viewBox="0 0 400 300" role={decorative ? undefined : 'img'} aria-hidden={decorative || undefined} aria-label={decorative ? undefined : `Ilustração de fita ${product?.cor || ''}`}>
     <defs>
       <pattern id={`lines-${id}`} width="5" height="5" patternUnits="userSpaceOnUse"><rect width="5" height="5" fill={color} /><path d="M0 1h5" stroke="#fff" strokeOpacity=".22" /><path d="M0 4h5" stroke="#000" strokeOpacity=".07" /></pattern>
       <filter id={`shadow-${id}`}><feDropShadow dx="0" dy="10" stdDeviation="9" floodOpacity=".12" /></filter>

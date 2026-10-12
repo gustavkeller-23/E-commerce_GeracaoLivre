@@ -4,7 +4,7 @@ Data: 08/10/2026.
 
 ## 1. Objetivo e base do planejamento
 
-Implementar uma loja virtual com catálogo inicial exclusivo de fitas de gorgurão, permitindo que a Geração Livre venda para clientes de outras regiões e que a proprietária gerencie catálogo, estoque e pedidos. Tecidos e outros artigos para costura e artesanato ficam fora do escopo de venda inicial.
+Implementar uma loja virtual com catálogo de fitas de gorgurão e cetim, permitindo que a Geração Livre venda para clientes de outras regiões e que a proprietária gerencie catálogo, estoque e pedidos. Tecidos e outros artigos para costura e artesanato ficam fora do escopo de venda inicial.
 
 Fonte de requisitos: `../Trabalho_Engenharia_de_Software_2.pdf`, 27 páginas. Foram lidas as oito histórias de usuário (US01 a US08), os nove casos de uso (UC01 a UC09), a modelagem e a arquitetura. O PDF escreve os identificadores UC7 e UC8 sem zero; este plano os normaliza para UC07 e UC08.
 
@@ -278,3 +278,12 @@ Pendências para os próximos lotes:
 As etapas 0 a 4 foram iniciadas com uma jornada integrada. Nenhuma história inteira deve ser considerada concluída enquanto seus critérios pendentes acima não forem atendidos.
 
 Verificação desta entrega: 11 testes de backend aprovados em H2 e PostgreSQL 18 temporário, 4 testes de frontend aprovados, builds de frontend/backend concluídos, configuração Compose validada e jornada testada em navegador desktop/móvel com atualização em tempo real entre abas. Os artefatos de compilação previamente versionados em `Back-End/target` foram retirados do código-fonte; a pasta passou a ser ignorada pelo Git.
+
+
+## 10. Ampliação do catálogo - 12/10/2026
+
+O responsável solicitou o cadastro de cinco fitas de cetim e forneceu as respectivas fotos. Esta solicitação amplia a restrição inicial de material: o catálogo e o painel agora aceitam cetim e gorgurão, preservando a identificação correta de cada produto.
+
+Cadastros: CF009 2105 (Azul Oceano), CF009 2101 (Rosa Magnólia), CF009 1377 (Bordô), CF009 1235 (Laranja Abóbora) e CF009 280 (Verde Cítrico), todos com 38 mm de largura. Preço temporário de R$ 4,90/m e estoque temporário de 30 m por cor foram escolhidos com autorização do responsável. Para estas cinco fitas, corte mínimo de 1 m e incremento de 0,5 m foram definidos pelo responsável.
+
+Migração V4 permite os dois materiais. Fotos originais preservadas e vinculadas por SKU. Cadastro da demonstração é idempotente e mantém alterações posteriores feitas pela loja; não inserir dados de teste automaticamente em produção. Valores e cortes continuam configuráveis no painel.

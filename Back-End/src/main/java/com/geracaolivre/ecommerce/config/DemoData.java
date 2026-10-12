@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 
 @Component
+@org.springframework.core.annotation.Order(0)
 @Profile("dev")
 public class DemoData implements CommandLineRunner {
     private final CategoriaRepository categorias;
